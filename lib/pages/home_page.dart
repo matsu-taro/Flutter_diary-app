@@ -20,7 +20,7 @@ class MyDiaryApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const HomePage(),
-      locale: const Locale('ja', 'JP'), // 日本語表記
+      locale: const Locale('ja', 'JP'),
     );
   }
 }
@@ -62,40 +62,42 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: SizedBox(
-          height: 500,
-          child: TableCalendar(
-            locale: 'ja_JP',
-            rowHeight: 65,
-            firstDay: DateTime.utc(2025, 1, 1),
-            lastDay: DateTime.utc(2025, 12, 31),
-            focusedDay: _focusedDay,
-            headerStyle: const HeaderStyle(
-              formatButtonVisible: false, // ← ★ これで「2 weeks」などを非表示
-              titleCentered: true, // ← タイトル（年月）を中央寄せ
-              titleTextStyle: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
+        child: Center(
+          child: SizedBox(
+            height: 500,
+            child: TableCalendar(
+              locale: 'ja_JP',
+              rowHeight: 65,
+              firstDay: DateTime.utc(2025, 1, 1),
+              lastDay: DateTime.utc(2025, 12, 31),
+              focusedDay: _focusedDay,
+              headerStyle: const HeaderStyle(
+                formatButtonVisible: false, // ← ★ これで「2 weeks」などを非表示
+                titleCentered: true, // ← タイトル（年月）を中央寄せ
+                titleTextStyle: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
               ),
-            ),
-            calendarFormat: CalendarFormat.month,
-            selectedDayPredicate: (day) => isSameDay(day, _selectedDay),
-            enabledDayPredicate: (day) => !_isFuture(day),
-            onDaySelected: (selectedDay, focusedDay) {
-              if (_isFuture(selectedDay)) return; // 未来日は無効
-              setState(() {
-                _selectedDay = selectedDay;
-                _focusedDay = focusedDay;
-              });
-            },
-            calendarBuilders: CalendarBuilders(
-              defaultBuilder: (context, day, focusedDay) =>
-                  _buildDayCell(context, day, isToday: false),
-              todayBuilder: (context, day, focusedDay) =>
-                  _buildDayCell(context, day, isToday: true),
-              selectedBuilder: (context, day, focusedDay) =>
-                  _buildDayCell(context, day, isToday: false, isSelected: true),
+              calendarFormat: CalendarFormat.month,
+              selectedDayPredicate: (day) => isSameDay(day, _selectedDay),
+              enabledDayPredicate: (day) => !_isFuture(day),
+              onDaySelected: (selectedDay, focusedDay) {
+                if (_isFuture(selectedDay)) return; // 未来日は無効
+                setState(() {
+                  _selectedDay = selectedDay;
+                  _focusedDay = focusedDay;
+                });
+              },
+              calendarBuilders: CalendarBuilders(
+                defaultBuilder: (context, day, focusedDay) =>
+                    _buildDayCell(context, day, isToday: false),
+                todayBuilder: (context, day, focusedDay) =>
+                    _buildDayCell(context, day, isToday: true),
+                selectedBuilder: (context, day, focusedDay) =>
+                    _buildDayCell(context, day, isToday: false, isSelected: true),
+              ),
             ),
           ),
         ),
