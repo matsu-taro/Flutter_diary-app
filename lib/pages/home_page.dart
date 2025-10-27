@@ -72,10 +72,10 @@ class _HomePageState extends State<HomePage> {
               lastDay: DateTime.utc(2025, 12, 31),
               focusedDay: _focusedDay,
               headerStyle: const HeaderStyle(
-                formatButtonVisible: false, // ← ★ これで「2 weeks」などを非表示
-                titleCentered: true, // ← タイトル（年月）を中央寄せ
+                formatButtonVisible: false, // 「2 weeks」などを非表示
+                titleCentered: true,
                 titleTextStyle: TextStyle(
-                  fontSize: 20,
+                  fontSize: 36,
                   fontWeight: FontWeight.bold,
                   color: Colors.black87,
                 ),
