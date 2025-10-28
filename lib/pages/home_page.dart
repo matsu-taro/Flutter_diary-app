@@ -82,9 +82,8 @@ class _HomePageState extends State<HomePage> {
               ),
               calendarFormat: CalendarFormat.month,
               selectedDayPredicate: (day) => isSameDay(day, _selectedDay),
-              enabledDayPredicate: (day) => !_isFuture(day),
               onDaySelected: (selectedDay, focusedDay) {
-                if (_isFuture(selectedDay)) return; // 未来日は無効
+                if (_isFuture(selectedDay)) return; // 未来はタップ無効
                 setState(() {
                   _selectedDay = selectedDay;
                   _focusedDay = focusedDay;
@@ -96,7 +95,8 @@ class _HomePageState extends State<HomePage> {
                 todayBuilder: (context, day, focusedDay) =>
                     _buildDayCell(context, day, isToday: true),
                 selectedBuilder: (context, day, focusedDay) =>
-                    _buildDayCell(context, day, isToday: false, isSelected: true),
+                    _buildDayCell(context, day,
+                        isToday: false, isSelected: true),
               ),
             ),
           ),
@@ -118,45 +118,52 @@ class _HomePageState extends State<HomePage> {
   Widget _buildDayCell(BuildContext context, DateTime day,
       {bool isToday = false, bool isSelected = false}) {
     String? mood = _moodData[DateTime.utc(day.year, day.month, day.day)];
+    bool isFutureDay = _isFuture(day);
 
-    return Container(
-      margin: const EdgeInsets.all(0),
-      decoration: BoxDecoration(
-        color: isToday
-            ? Colors.yellow.shade100
-            : isSelected
-            ? Colors.green.shade50
-            : Colors.white,
-        borderRadius: BorderRadius.zero,
-        border: Border(
-          right: BorderSide(color: Colors.grey.shade400, width: 0.8),
-          bottom: BorderSide(color: Colors.grey.shade400, width: 0.8),
-        ),
-      ),
-      child: Stack(
-        children: [
-          // 📆 日付（左上）
-          Positioned(
-            top: 4,
-            left: 6,
-            child: Text(
-              '${day.day}',
-              style: TextStyle(
-                fontSize: 12,
-                color: _isFuture(day) ? Colors.grey : Colors.black,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-              ),
-            ),
+    return GestureDetector(
+      onTap: isFutureDay ? null : () {
+        setState(() {
+          _selectedDay = day;
+        });
+      },
+      child: Container(
+        margin: const EdgeInsets.all(0),
+        decoration: BoxDecoration(
+          color: isToday
+              ? Colors.yellow.shade100
+              : isSelected
+              ? Colors.green.shade50
+              : Colors.white,
+          borderRadius: BorderRadius.zero,
+          border: Border(
+            right: BorderSide(color: Colors.grey.shade400, width: 0.8),
+            bottom: BorderSide(color: Colors.grey.shade400, width: 0.8),
           ),
-          // 😄 絵文字（中央）
-          if (mood != null)
-            Center(
+        ),
+        child: Stack(
+          children: [
+            Positioned(
+              top: 4,
+              left: 6,
               child: Text(
-                mood,
-                style: const TextStyle(fontSize: 20),
+                '${day.day}',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: isFutureDay ? Colors.grey : Colors.black,
+                  fontWeight:
+                  isSelected ? FontWeight.bold : FontWeight.normal,
+                ),
               ),
             ),
-        ],
+            if (mood != null)
+              Center(
+                child: Text(
+                  mood,
+                  style: const TextStyle(fontSize: 20),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
